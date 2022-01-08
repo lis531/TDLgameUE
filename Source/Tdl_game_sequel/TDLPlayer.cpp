@@ -5,17 +5,19 @@
 
 ATDLPlayer::ATDLPlayer()
 {
-	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(20.0f, 65.0f);
 
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 61.0f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 }
 
 void ATDLPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCharacterMovement()->MaxWalkSpeed = this->WalkingSpeed;
 }
 
 void ATDLPlayer::Tick(float DeltaTime)

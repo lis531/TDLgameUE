@@ -10,6 +10,7 @@
 #include "Containers/Array.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "TDLPlayer.generated.h"
@@ -26,11 +27,26 @@ class TDL_GAME_SEQUEL_API ATDLPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FirstPersonCameraComponent;
-
 public:
 	ATDLPlayer();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"));
+		USpotLightComponent* Flashlight;
+
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "3000.0", DefaultValue = 1000.0))
+		float WalkingSpeed;
+
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "3000.0", DefaultValue = 1600.0))
+		float RunningSpeed;
+
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "3.0", DefaultValue = 1.0))
+		float LookSensitivity;
+
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "3000.0", DefaultValue = 600.0))
+		float InteractionDistance;
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,18 +55,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3000.0", DefaultValue = 1000.0))
-		float WalkingSpeed;
-
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3000.0", DefaultValue = 1600.0))
-		float RunningSpeed;
-
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.01", ClampMax = "2.0", DefaultValue = 1.0))
-		float LookSensitivity = 1.0f;
-
-	UPROPERTY(EditAnywhere, meta = (ClampMin = "0", ClampMax = "3000.0", DefaultValue = 50.0))
-		float InteractionDistance;
 
 	UFUNCTION()
 		void MoveVertically(float value);
@@ -82,4 +86,6 @@ public:
 		void Interact();
 
 	bool bPressedSprint = false;
+
+	UCameraComponent* GetCameraComponent() { return this->FirstPersonCameraComponent; };
 };
