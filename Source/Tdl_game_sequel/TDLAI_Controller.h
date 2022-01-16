@@ -1,27 +1,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AI_Controller.h"
-#include "AI_Controller.generated.h"
+#include "AIController.h"
+#include "TDLAI_Controller.generated.h"
 
 UCLASS()
-class TDL_GAME_SEQUEL_API AAI_Controller : public AAIController
+class TDL_GAME_SEQUEL_API ATDLAI_Controller : public AAIController
 {
 	GENERATED_BODY()
 	
 public:
-	AAI_Controller();
+	ATDLAI_Controller();
 
 	virtual void BeginPlay() override;
 
 	virtual void Possess(APawn* Pawn) override;
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual FRotator GetControlRotation() const override;
 
 	UFUNCTION()
-	void OnPawnDetected(const TArray<UObject*>& DetectedPawns);
+	void OnPawnDetected(const TArray<AActor*> &DetectedPawns);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	float AISightRadius = 500.0f;
