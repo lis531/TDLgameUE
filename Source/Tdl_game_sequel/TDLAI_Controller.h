@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "GameFramework/Pawn.h"
 #include "TDLAI_Controller.generated.h"
+
+class APawn;
 
 UCLASS()
 class TDL_GAME_SEQUEL_API ATDLAI_Controller : public AAIController
@@ -14,11 +17,11 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void Possess(APawn* Pawn) override;
+	//virtual void Possess(APawn* Pawn) override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual FRotator GetControlRotation() const override;
+	//virtual FRotator GetControlRotation() const override;
 
 	UFUNCTION()
 	void OnPawnDetected(const TArray<AActor*> &DetectedPawns);

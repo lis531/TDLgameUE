@@ -40,21 +40,9 @@ void ATDLAI_Controller::BeginPlay()
     }
 
 }    
-void ATDLAI_Controller::Possess(APawn* Pawn)
-{
-    Super::Possess(Pawn);
-}
 void ATDLAI_Controller::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
-}
-void ATDLAI_Controller::GetControlRotation() const
-{
-    if(GetPawn() == nullptr)
-    {
-        return FRotator(0.0f, 0.0f, 0.0f);
-    }
-    return FRotator(0.0f, GetPawn()->GetActorRotation().Yaw, 0.0f);
 }
 void ATDLAI_Controller::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 {
