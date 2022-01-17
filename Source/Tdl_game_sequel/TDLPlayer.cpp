@@ -11,18 +11,45 @@ ATDLPlayer::ATDLPlayer()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 61.0f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> stepSoundCueObject(TEXT("SoundCue'/Game/Player/Stepping'"));
+	if (stepSoundCueObject.Succeeded())
+	{
+		SteppingSoundCue = stepSoundCueObject.Object;
+
+		StepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("SteppingAudioComponent"));
+		StepAudioComponent->SetupAttachment(RootComponent);
+		StepAudioComponent->SetSound(SteppingSoundCue);
+	}
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 4, FColor::Red, "Failed to load the SteppingSoundCue!");
+
+	Flashlight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Flashlight"));
+	Flashlight->SetupAttachment(FirstPersonCameraComponent);
+	Flashlight->Intensity = 10000.0f;
+	Flashlight->AttenuationRadius = 2000.0f;
+
+
+	previousStepPos = GetActorLocation();
 }
 
 void ATDLPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	GetCharacterMovement()->MaxWalkSpeed = this->WalkingSpeed;
 }
 
 void ATDLPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector CurrentPos = GetActorLocation();
+	if (FVector::Dist(previousStepPos, CurrentPos) > OffsetBetweenSteps)
+	{
+		StepAudioComponent->Play();
+		previousStepPos = CurrentPos;
+	}
 }
 
 void ATDLPlayer::MoveVertically(float value)
@@ -95,9 +122,27 @@ void ATDLPlayer::Interact()
 	if (hitSomething)
 	{
 #ifdef DRAW_DEBUG
-		DrawDebugBox(GetWorld(), hit.ImpactPoint, FVector(4, 4, 4), FColor::Emerald);
+		DrawDebugBox(GetWorld(), hit.ImpactPoint, FVector(4, 4, 4), FColor::Emerald, false, 2.0f);
+		AActor* hitActor = hit.GetActor();
+
+		// Jezeli trafiono aktora "Drzwi"
+		if (hitActor->ActorHasTag(TEXT("Door")))
+		{
+			UStaticMeshComponent* hitMesh = Cast<UStaticMeshComponent>(hit.GetComponent());
+			
+			// Jezeli trafiono drzwi (te przesuwane)
+			if (hitMesh->ComponentHasTag(TEXT("DoorInteractable")))
+				Cast<ADrzwi>(hitActor)->Open();
+			
+		}
+
 #endif 
 	}
+}
+
+void ATDLPlayer::ToggleFlashlight()
+{
+	Flashlight->ToggleVisibility();
 }
 
 // Called to bind functionality to input
@@ -126,5 +171,6 @@ void ATDLPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ATDLPlayer::StopSprint);
 
 	// Interakcje
-	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &ATDLPlayer::Interact);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ATDLPlayer::Interact);
+	PlayerInputComponent->BindAction("Flashlight", IE_Pressed, this, &ATDLPlayer::ToggleFlashlight);
 }

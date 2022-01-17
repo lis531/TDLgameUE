@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Drzwi.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -11,14 +13,18 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "Sound/SoundCue.h"
 #include "TDLPlayer.generated.h"
 
 class UInputComponent;
 class USceneComponent;
 class UCameraComponent;
 class UCharacterMovementController;
+class UAudioComponent;
+class USpotLightComponent;
 
 #define DRAW_DEBUG
 
@@ -47,6 +53,9 @@ public:
 
 	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "3000.0", DefaultValue = 600.0))
 		float InteractionDistance;
+
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0.0", ClampMax = "1000.0", DefaultValue = 2.0))
+		float OffsetBetweenSteps;
 
 protected:
 	virtual void BeginPlay() override;
@@ -84,8 +93,15 @@ public:
 
 	UFUNCTION()
 		void Interact();
+	UFUNCTION()
+		void ToggleFlashlight();
 
 	bool bPressedSprint = false;
+	bool flashlightOn = true;
 
+	FVector previousStepPos;
+
+	USoundCue* SteppingSoundCue;
+	UAudioComponent* StepAudioComponent;
 	UCameraComponent* GetCameraComponent() { return this->FirstPersonCameraComponent; };
 };
