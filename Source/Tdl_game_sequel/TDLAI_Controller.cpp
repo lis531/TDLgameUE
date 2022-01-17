@@ -2,6 +2,8 @@
 
 
 #include "TDLAI_Controller.h"
+#include "AI_Character.h"
+#include "Waypoint.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
@@ -40,10 +42,35 @@ void ATDLAI_Controller::BeginPlay()
     }
 
 }    
+
+void ATDLAI_Controller::OnPossess(APawn* Pawn1)
+{
+    Super::OnPossess(Pawn1);
+}
+
 void ATDLAI_Controller::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+    AAI_Character* Character1 = Cast<AAI_Character>(GetPawn());
+    if (Character1->NextWaypoint != nullptr)
+    {
+        MoveToActor(Character1->NextWaypoint, 5.0f);
+    }
 }
+
+
+FRotator ATDLAI_Controller::GetControlRotation() const
+{
+    if (GetPawn() == nullptr)
+    {
+        return FRotator(0.0f, 0.0f, 0.0f);
+    }
+
+    return FRotator(0.0f, GetPawn()->GetActorRotation().Yaw, 0.0f);
+
+}
+
 void ATDLAI_Controller::OnPawnDetected(const TArray<AActor*>& DetectedPawns)
 {
 

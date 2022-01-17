@@ -17,11 +17,11 @@ public:
 
 	virtual void BeginPlay() override;
 
-	//virtual void Possess(APawn* Pawn) override;
+	virtual void OnPossess(APawn* Pawn1) override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	//virtual FRotator GetControlRotation() const override;
+	virtual FRotator GetControlRotation() const override;
 
 	UFUNCTION()
 	void OnPawnDetected(const TArray<AActor*> &DetectedPawns);
