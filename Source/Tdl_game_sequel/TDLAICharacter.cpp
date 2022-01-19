@@ -3,36 +3,35 @@
 
 #include "TDLAICharacter.h"
 
-// Sets default values
 ATDLAICharacter::ATDLAICharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	AIBrain = CreateAI
-	AIBrain.SetPawn(this);
 }
 
-// Called when the game starts or when spawned
 void ATDLAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
 	TargetPlayer = Cast<ATDLPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnInfo.OverrideLevel = GetLevel();
+	SpawnInfo.ObjectFlags |= RF_Transient;
+	AIBrain = GetWorld()->SpawnActor<ATDLAI_Controller>(PlayerAIControllerClassBP, GetActorLocation(), GetActorRotation(), SpawnInfo);
+
+	if (AIBrain)
+		AIBrain->Possess(this);
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("FAILED TO INITIALIZE AIBRAIN!"));
+	
 }
 
-// Called every frame
 void ATDLAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	AIBrain.MoveToActor(TargetPlayer);
+	AIBrain->MoveToActor(TargetPlayer);
 }
-
-// Called to bind functionality to input
-void ATDLAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-

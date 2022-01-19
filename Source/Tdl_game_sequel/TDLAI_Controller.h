@@ -17,10 +17,11 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void OnPossess(APawn* Pawn1) override;
+	//virtual void OnPossess(APawn* Pawn1) override;
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	/*
 	virtual FRotator GetControlRotation() const override;
 
 	UFUNCTION()
@@ -40,4 +41,5 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = AI)
 	class UAISenseConfig_Sight* SightConfig;
+	*/
 };
