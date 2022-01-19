@@ -22,9 +22,6 @@ class TDL_GAME_SEQUEL_API ATDLAICharacter : public ACharacter
 public:
 	ATDLAICharacter();
 
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<AAIController> PlayerAIControllerClassBP;
-
 	virtual void Tick(float DeltaTime) override;
 
 protected:

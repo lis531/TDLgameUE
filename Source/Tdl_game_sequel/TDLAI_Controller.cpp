@@ -2,8 +2,6 @@
 
 
 #include "TDLAI_Controller.h"
-#include "AI_Character.h"
-#include "Waypoint.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
